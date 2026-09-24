@@ -1,0 +1,124 @@
+{
+  "summary": {
+    "total_tests": 19,
+    "passed_tests": 18,
+    "success_rate": "94.7%",
+    "timestamp": "2026-02-06T19:48:05.914317"
+  },
+  "detailed_results": [
+    {
+      "test": "API Health Check",
+      "status": "PASS",
+      "details": "Status: 200, Message: Twitter Buyer-Intent Intelligence API",
+      "timestamp": "2026-02-06T19:48:03.222905"
+    },
+    {
+      "test": "User Signup",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:03.590896"
+    },
+    {
+      "test": "Token Extraction",
+      "status": "PASS",
+      "details": "User ID: 2",
+      "timestamp": "2026-02-06T19:48:03.591534"
+    },
+    {
+      "test": "Login Invalid Credentials",
+      "status": "PASS",
+      "details": "Status: 401",
+      "timestamp": "2026-02-06T19:48:03.704754"
+    },
+    {
+      "test": "Login Valid Credentials",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:04.016883"
+    },
+    {
+      "test": "Protected Endpoint No Auth",
+      "status": "PASS",
+      "details": "Status: 401",
+      "timestamp": "2026-02-06T19:48:04.055995"
+    },
+    {
+      "test": "Search History Empty",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:04.175656"
+    },
+    {
+      "test": "History Count Check",
+      "status": "PASS",
+      "details": "Found 0 history items",
+      "timestamp": "2026-02-06T19:48:04.176289"
+    },
+    {
+      "test": "Datasets Empty",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:04.292133"
+    },
+    {
+      "test": "Datasets Count Check",
+      "status": "PASS",
+      "details": "Found 0 dataset items",
+      "timestamp": "2026-02-06T19:48:04.292842"
+    },
+    {
+      "test": "Search Invalid Data",
+      "status": "PASS",
+      "details": "Status: 422",
+      "timestamp": "2026-02-06T19:48:04.327695"
+    },
+    {
+      "test": "Twitter Search Minimal",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:04.730802"
+    },
+    {
+      "test": "Search Results Analysis",
+      "status": "PASS",
+      "details": "Found 0 tweets, created 0 datasets",
+      "timestamp": "2026-02-06T19:48:04.731605"
+    },
+    {
+      "test": "Response Structure Check",
+      "status": "PASS",
+      "details": "All required fields present",
+      "timestamp": "2026-02-06T19:48:04.731626"
+    },
+    {
+      "test": "Search History After Search",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:05.823040"
+    },
+    {
+      "test": "History Updated Check",
+      "status": "PASS",
+      "details": "Found 1 history items",
+      "timestamp": "2026-02-06T19:48:05.823769"
+    },
+    {
+      "test": "History Item Structure",
+      "status": "PASS",
+      "details": "All required fields present",
+      "timestamp": "2026-02-06T19:48:05.823790"
+    },
+    {
+      "test": "Datasets After Search",
+      "status": "PASS",
+      "details": "Status: 200",
+      "timestamp": "2026-02-06T19:48:05.913437"
+    },
+    {
+      "test": "Datasets Updated Check",
+      "status": "FAIL",
+      "details": "No dataset items found after search",
+      "timestamp": "2026-02-06T19:48:05.914158"
+    }
+  ]
+}

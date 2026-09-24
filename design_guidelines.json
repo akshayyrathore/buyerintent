@@ -1,0 +1,141 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Twitter Buyer-Intent Intelligence",
+      "aesthetic": "Lusion-inspired Cinematic Dark Mode",
+      "core_values": ["Precision", "Intelligence", "Fluidity", "Depth"],
+      "emotional_tone": "Premium, Futuristic, Data-driven, Immersive"
+    },
+    "typography": {
+      "font_family": {
+        "heading": "Unbounded, sans-serif",
+        "body": "Manrope, sans-serif",
+        "mono": "JetBrains Mono, monospace"
+      },
+      "scaling": {
+        "h1": "text-5xl md:text-7xl font-bold tracking-tighter",
+        "h2": "text-4xl md:text-5xl font-semibold tracking-tight",
+        "h3": "text-2xl md:text-3xl font-medium",
+        "body": "text-base leading-relaxed text-muted-foreground",
+        "caption": "text-xs uppercase tracking-widest text-muted-foreground/70"
+      },
+      "import_url": "https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+    },
+    "colors": {
+      "palette": {
+        "background": "hsl(240, 10%, 2%)",
+        "foreground": "hsl(0, 0%, 98%)",
+        "card": "hsl(240, 10%, 4%)",
+        "card_foreground": "hsl(0, 0%, 98%)",
+        "popover": "hsl(240, 10%, 4%)",
+        "popover_foreground": "hsl(0, 0%, 98%)",
+        "primary": "hsl(250, 100%, 70%)",
+        "primary_foreground": "hsl(0, 0%, 100%)",
+        "secondary": "hsl(240, 5%, 15%)",
+        "secondary_foreground": "hsl(0, 0%, 98%)",
+        "muted": "hsl(240, 5%, 15%)",
+        "muted_foreground": "hsl(240, 5%, 65%)",
+        "accent": "hsl(250, 100%, 70%)",
+        "accent_foreground": "hsl(0, 0%, 100%)",
+        "destructive": "hsl(0, 62.8%, 30.6%)",
+        "destructive_foreground": "hsl(0, 0%, 98%)",
+        "border": "hsl(240, 5%, 15%)",
+        "input": "hsl(240, 5%, 15%)",
+        "ring": "hsl(250, 100%, 70%)"
+      },
+      "gradients": {
+        "hero_glow": "radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 50%)",
+        "card_shimmer": "linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.05) 50%, transparent 75%)"
+      }
+    },
+    "layout": {
+      "spacing": {
+        "container_padding": "p-6 md:p-12 lg:p-24",
+        "section_gap": "gap-12 md:gap-24",
+        "element_gap": "gap-4 md:gap-8"
+      },
+      "grid_system": {
+        "dashboard": "grid grid-cols-1 md:grid-cols-12 gap-6",
+        "landing": "grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-16"
+      },
+      "border_radius": {
+        "default": "rounded-2xl",
+        "button": "rounded-full",
+        "card": "rounded-3xl"
+      }
+    },
+    "visual_enhancers": {
+      "glassmorphism": "backdrop-blur-xl bg-black/40 border border-white/10",
+      "shadows": {
+        "glow": "0 0 40px -10px rgba(99, 102, 241, 0.3)",
+        "card": "0 20px 40px -20px rgba(0,0,0,0.5)"
+      },
+      "textures": "Use a subtle noise overlay (opacity 0.03) on the main background to prevent banding and add 'film' quality."
+    },
+    "motion": {
+      "library": "framer-motion",
+      "scroll": "lenis",
+      "defaults": {
+        "duration": 0.6,
+        "ease": [0.22, 1, 0.36, 1]
+      },
+      "interactions": {
+        "hover": "scale-[1.02] brightness-110",
+        "tap": "scale-[0.98]"
+      }
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-8 py-6 text-lg font-medium transition-all duration-300 shadow-[0_0_20px_-5px_rgba(99,102,241,0.5)] hover:shadow-[0_0_30px_-5px_rgba(99,102,241,0.7)]",
+      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80 rounded-full px-6 py-4 text-base font-medium border border-white/5"
+    },
+    "cards": {
+      "dashboard": "bg-card/50 backdrop-blur-md border border-white/5 rounded-3xl p-6 hover:border-primary/30 transition-colors duration-300",
+      "feature": "group relative overflow-hidden rounded-3xl bg-gradient-to-b from-white/5 to-transparent p-8 border border-white/10 hover:border-primary/50 transition-all duration-500"
+    },
+    "inputs": {
+      "search": "bg-black/20 border-white/10 focus:border-primary/50 focus:ring-primary/20 rounded-xl h-14 text-lg px-6 backdrop-blur-sm"
+    }
+  },
+  "assets": {
+    "images": [
+      {
+        "category": "hero_background",
+        "url": "https://images.unsplash.com/photo-1768327239495-cd6edaeab619?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Abstract purple and black geometric shapes with glowing edges",
+        "usage": "Main hero section background with overlay"
+      },
+      {
+        "category": "location_context",
+        "url": "https://images.unsplash.com/photo-1767975793315-3a76f15c3b58?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Skyscrapers illuminated with vibrant neon lights at night",
+        "usage": "Search results or location filtering context"
+      },
+      {
+        "category": "data_visualization",
+        "url": "https://images.unsplash.com/photo-1759956445479-ab537a9b2f12?crop=entropy&cs=srgb&fm=jpg&q=85",
+        "description": "Abstract light streaks create a symmetrical pattern",
+        "usage": "Background for data analytics section"
+      }
+    ],
+    "icons": "lucide-react"
+  },
+  "instructions_to_main_agent": [
+    "1. THEME SETUP: Update `tailwind.config.js` with the colors defined in `design_system.colors`. This is CRITICAL for the 'Lusion' look. Do not use default shadcn slate colors.",
+    "2. FONTS: Import 'Unbounded' and 'Manrope' in `index.css` and set them as default font families.",
+    "3. LAYOUT: Use the 'Bento' grid strategy for the dashboard. Avoid simple rows. Make some cards span 2 columns, some 2 rows.",
+    "4. MOTION: Install `lenis` for smooth scrolling on the landing page. Use `framer-motion` for all page transitions and card entrances.",
+    "5. GLASSMORPHISM: Use the `visual_enhancers.glassmorphism` class utility for all floating panels (sidebar, search bar, modals).",
+    "6. AUTH: Build a custom JWT auth flow. The login page should be split 50/50: Left side form, Right side 3D/Abstract visual (use the hero image).",
+    "7. NO STOCK PEOPLE: Do not use generic photos of people shaking hands. Use the abstract/city images provided.",
+    "8. DATA-TESTID: Add `data-testid` to all interactive elements (buttons, inputs, cards)."
+  ],
+  "universal_guidelines": [
+    "Avoid 'AI slop' - generic centered layouts.",
+    "Use 2-3x more spacing than typical.",
+    "Dark colors must be rich (tinted), not pure black.",
+    "Micro-animations for every interaction.",
+    "Use 'sonner' for toasts."
+  ]
+}
