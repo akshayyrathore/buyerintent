@@ -1,269 +1,338 @@
-# Twitter Buyer-Intent Intelligence System 🎯
+# Buyer Intent 🎯
 
-A production-ready AI SaaS platform that detects buyer intent on Twitter using location, category, and keyword filtering. Built for early-stage startups to turn public conversations into structured demand signals.
+**Twitter/X Buyer-Intent Intelligence** — an AI SaaS that finds people publicly asking to buy something, in a given location and category, and turns those tweets into scored, structured demand signals.
 
-## 🚀 Features
+Built with **FastAPI + PostgreSQL** on the backend and **React 19 + Tailwind** on the frontend, with **Groq (Llama 3.3 70B)** for intent analysis.
 
-### Core Functionality
-- **AI-Powered Intent Detection**: Uses Groq + Llama 3.2 to analyze tweets for genuine buyer intent
-- **Semantic Search**: Expands user queries into optimized Twitter search terms
-- **Real-Time Analysis**: Fetches and analyzes tweets from Twitter API v2
-- **Intent Scoring**: Automatic classification (High/Medium/Low) with confidence scores
-- **Dataset Generation**: Builds training datasets for ML model improvements
-- **Search History**: Track and review past searches
-- **Export Capability**: Download datasets in JSON format
+---
 
-### Authentication
-- JWT-based email/password authentication
-- Secure token management with 24-hour expiration
-- Protected routes with automatic redirection
+## Table of Contents
 
-### Design
-- **Lusion-inspired aesthetic**: Dark theme with electric indigo accents
-- **Glassmorphism effects**: Backdrop blur and translucent surfaces
-- **Smooth animations**: Framer Motion for micro-interactions
-- **Responsive layout**: Works on all screen sizes
+- [Features](#features)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Installation Guide](#installation-guide)
+  - [1. Prerequisites](#1-prerequisites)
+  - [2. Clone the repository](#2-clone-the-repository)
+  - [3. Get your API keys](#3-get-your-api-keys)
+  - [4. Backend setup](#4-backend-setup)
+  - [5. Frontend setup](#5-frontend-setup)
+  - [6. Verify it works](#6-verify-it-works)
+- [Environment Variables](#environment-variables)
+- [API Reference](#api-reference)
+- [Database Schema](#database-schema)
+- [How Intent Scoring Works](#how-intent-scoring-works)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
+- [Known Limitations](#known-limitations)
+- [License](#license)
 
-## 🛠️ Tech Stack
+---
 
-### Backend
-- **FastAPI**: Modern Python web framework
-- **PostgreSQL (Neon)**: Cloud-native database
-- **Groq + Llama 3.2**: Fast LLM inference for intent analysis
-- **Twitter API v2**: Official API for tweet fetching
-- **asyncpg**: Async PostgreSQL driver
-- **JWT**: Token-based authentication
+## Features
 
-### Frontend
-- **React 19**: Latest React with hooks
-- **Tailwind CSS**: Utility-first styling
-- **Framer Motion**: Animation library
-- **Lenis**: Smooth scrolling
-- **Axios**: HTTP client
-- **Sonner**: Toast notifications
-- **Lucide React**: Icon library
+- **AI intent detection** — every tweet is analysed by Llama 3.3 70B via Groq and given an intent score (0–1), a label (high / medium / low) and a plain-English reason.
+- **Semantic query expansion** — your location + category + keywords are expanded into an optimised Twitter boolean search.
+- **Official Twitter API v2** — Recent Search endpoint, public tweets only, no scraping.
+- **Dataset generation** — high-intent tweets are stored as labelled training data you can export as JSON.
+- **Search history** — every search is saved per user.
+- **JWT auth** — email/password signup and login, 24-hour tokens, protected routes.
+- **Modern UI** — dark glassmorphism theme, Framer Motion animations, Lenis smooth scroll, fully responsive.
 
-## 📦 Installation
+## Architecture
 
-### Prerequisites
-- Python 3.11+
-- Node.js 18+
-- PostgreSQL database (Neon)
-- Twitter API Bearer Token
-- Groq API Key
+```
+┌──────────────┐   HTTPS/JSON   ┌──────────────────┐        ┌────────────────┐
+│  React app   │ ─────────────▶ │  FastAPI backend │ ─────▶ │ Twitter API v2 │
+│ (port 3000)  │ ◀───────────── │   (port 8001)    │        └────────────────┘
+└──────────────┘                │                  │ ─────▶ ┌────────────────┐
+                                │  /api/*          │        │  Groq (Llama)  │
+                                └────────┬─────────┘        └────────────────┘
+                                         │ asyncpg
+                                ┌────────▼─────────┐
+                                │ PostgreSQL (Neon)│
+                                └──────────────────┘
+```
 
-### Backend Setup
+## Tech Stack
+
+| Layer     | Technology |
+|-----------|------------|
+| Backend   | Python 3.11+, FastAPI, Uvicorn, asyncpg, PyJWT, bcrypt, python-dotenv |
+| AI        | Groq SDK, model `llama-3.3-70b-versatile` |
+| Data      | PostgreSQL (Neon recommended) |
+| Frontend  | React 19, React Router 7, Tailwind CSS, shadcn/ui (Radix), Framer Motion, Lenis, Axios, Sonner, Lucide, Recharts |
+| Tooling   | CRACO (Create React App), Yarn |
+
+## Project Structure
+
+```
+.
+├── backend/
+│   ├── server.py           # FastAPI app, routes (/api/*)
+│   ├── auth.py             # Password hashing + JWT helpers
+│   ├── database.py         # asyncpg pool + table creation
+│   ├── intent_engine.py    # Groq / Llama prompts for query expansion + intent scoring
+│   ├── twitter_client.py   # Twitter API v2 client
+│   ├── requirements.txt
+│   └── .env.example
+├── frontend/
+│   ├── src/
+│   │   ├── pages/          # Landing, Auth, Dashboard, History, Datasets
+│   │   ├── components/     # TweetCard, IntentBadge, ui/ (shadcn)
+│   │   ├── contexts/       # AuthContext
+│   │   └── App.js          # Routes
+│   ├── package.json
+│   └── .env.example
+├── tests/                  # pytest package
+├── backend_test.py         # End-to-end API smoke test
+├── RATE_LIMIT_SOLUTION.md  # Notes on Twitter rate limits
+└── README.md
+```
+
+---
+
+## Installation Guide
+
+### 1. Prerequisites
+
+Make sure the following are installed:
+
+| Tool | Version | Check |
+|------|---------|-------|
+| Python | 3.11 or newer | `python --version` |
+| Node.js | 18 or newer | `node --version` |
+| Yarn | 1.x (classic) | `yarn --version` (install with `npm i -g yarn`) |
+| Git | any | `git --version` |
+
+You also need a **PostgreSQL** database. The easiest option is a free [Neon](https://neon.tech) project, but any Postgres 13+ instance works (local, Docker, Supabase, Render, etc.).
+
+### 2. Clone the repository
 
 ```bash
-cd /app/backend
+git clone https://github.com/akshayyrathore/buyerintent.git
+cd buyerintent
+```
+
+### 3. Get your API keys
+
+| Key | Where to get it |
+|-----|-----------------|
+| **Twitter Bearer Token** | [developer.x.com](https://developer.x.com) → create a project & app → *Keys and tokens* → **Bearer Token**. The free/Basic tier allows ~100 tweet-search requests per month. |
+| **Groq API key** | [console.groq.com](https://console.groq.com) → *API Keys* → create key. Free tier is sufficient. |
+| **Postgres URL** | Neon dashboard → *Connection string* (choose the pooled `postgresql://…?sslmode=require` URL). |
+
+### 4. Backend setup
+
+```bash
+cd backend
+
+# Create and activate a virtual environment
+python -m venv venv
+# Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# Windows (cmd):
+venv\Scripts\activate.bat
+# macOS / Linux:
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Configure environment variables
-cp .env.example .env
-# Edit .env with your credentials:
-# - POSTGRES_URL
-# - TWITTER_BEARER_TOKEN
-# - GROQ_API_KEY
-# - JWT_SECRET
+# Create your .env from the template and fill in the values
+cp .env.example .env        # Windows: copy .env.example .env
+```
 
-# Run migrations (tables are auto-created on startup)
-# Start server
+Open `backend/.env` and set at minimum:
+
+```env
+POSTGRES_URL=postgresql://user:password@host/dbname?sslmode=require
+TWITTER_BEARER_TOKEN=...
+GROQ_API_KEY=...
+JWT_SECRET=some-long-random-string
+```
+
+Generate a strong secret with:
+
+```bash
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Start the API server:
+
+```bash
 uvicorn server:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-### Frontend Setup
+Database tables are created automatically on first startup. The API is now at `http://localhost:8001/api` and interactive docs at `http://localhost:8001/docs`.
+
+### 5. Frontend setup
+
+Open a **second terminal**:
 
 ```bash
-cd /app/frontend
+cd frontend
 
 # Install dependencies
 yarn install
 
-# Configure environment variables
-# Edit .env with your backend URL:
-# - REACT_APP_BACKEND_URL
+# Create your .env from the template
+cp .env.example .env        # Windows: copy .env.example .env
+```
 
-# Start development server
+`frontend/.env` should point at the backend:
+
+```env
+REACT_APP_BACKEND_URL=http://localhost:8001
+```
+
+Start the dev server:
+
+```bash
 yarn start
 ```
 
-## 🔑 Environment Variables
+The app opens at **http://localhost:3000**.
 
-### Backend (.env)
-```env
-POSTGRES_URL=postgresql://user:pass@host/db?sslmode=require
-DB_NAME=neondb
-TWITTER_BEARER_TOKEN=your_twitter_bearer_token
-GROQ_API_KEY=your_groq_api_key
-JWT_SECRET=your_secret_key
-JWT_ALGORITHM=HS256
-JWT_EXPIRATION_HOURS=24
-CORS_ORIGINS=*
-```
+### 6. Verify it works
 
-### Frontend (.env)
-```env
-REACT_APP_BACKEND_URL=https://your-backend-url.com
-```
+1. Visit `http://localhost:8001/api/` — you should see a JSON welcome message.
+2. Visit `http://localhost:3000`, click **Get Started**, and create an account.
+3. On the **Dashboard**, enter a location (e.g. `San Francisco`), a category (e.g. `SaaS`), and a few keywords, then search.
+4. Results appear as tweet cards with an intent badge. Check **History** and **Datasets** to see stored data.
 
-## 🗄️ Database Schema
-
-### users
-- id (SERIAL PRIMARY KEY)
-- email (VARCHAR UNIQUE)
-- password_hash (VARCHAR)
-- created_at (TIMESTAMP)
-
-### search_queries
-- id (SERIAL PRIMARY KEY)
-- user_id (INTEGER FK)
-- location (VARCHAR)
-- category (VARCHAR)
-- keywords (TEXT)
-- created_at (TIMESTAMP)
-
-### tweets
-- id (SERIAL PRIMARY KEY)
-- tweet_id (VARCHAR UNIQUE)
-- text (TEXT)
-- username (VARCHAR)
-- created_at (TIMESTAMP)
-- engagement_metrics (JSONB)
-- location_confidence (FLOAT)
-- intent_score (FLOAT)
-- category (VARCHAR)
-- raw_json (JSONB)
-
-### intent_datasets
-- id (SERIAL PRIMARY KEY)
-- tweet_id (VARCHAR FK)
-- intent_label (VARCHAR)
-- reasoning (TEXT)
-- created_at (TIMESTAMP)
-
-## 🔍 API Endpoints
-
-### Authentication
-- `POST /api/auth/signup` - Create new account
-- `POST /api/auth/login` - Login with credentials
-
-### Search
-- `POST /api/search/twitter` - Search Twitter for buyer intent
-- `GET /api/search/history` - Get search history
-
-### Datasets
-- `GET /api/datasets` - Get intent datasets
-
-## 📊 How It Works
-
-1. **User Input**: User provides location, category, and keywords
-2. **Semantic Expansion**: Llama 3.2 expands input into optimized search terms
-3. **Twitter Query**: Boolean search query is constructed and executed
-4. **Intent Analysis**: Each tweet is analyzed for buyer intent, location match, and category relevance
-5. **Scoring**: Tweets receive intent scores (0.0-1.0) and labels (high/medium/low)
-6. **Storage**: High-intent tweets are stored with analysis metadata
-7. **Dataset Creation**: Training data is automatically generated for future improvements
-
-## 🎯 Intent Detection Criteria
-
-### High Intent (0.8-1.0)
-- Clear buying signals with urgency
-- Explicit requests for recommendations
-- Budget mentions or timeline indicators
-
-### Medium Intent (0.5-0.79)
-- Exploring options
-- Asking for recommendations
-- Comparing alternatives
-
-### Low Intent (0.0-0.49)
-- Casual mentions
-- No clear buying signals
-- Informational queries only
-
-## 🚦 Rate Limits
-
-- **Twitter API**: 100 requests/month (Basic tier)
-- **Groq API**: Generous free tier with fast inference
-- **Recommended**: Use precise queries to maximize API efficiency
-
-## 🛡️ Security & Compliance
-
-- ✅ Uses official Twitter API v2 (no scraping)
-- ✅ Public tweets only (no private data)
-- ✅ JWT authentication with secure password hashing
-- ✅ CORS configuration for production
-- ✅ Environment-based configuration (no hardcoded credentials)
-
-## 🚀 Deployment
-
-### Render (Recommended)
-1. Create new Web Service
-2. Connect your repository
-3. Set environment variables
-4. Deploy!
-
-### Environment Variables on Render
-- Set all backend .env variables in Render dashboard
-- Use Render's PostgreSQL addon or external Neon database
-- Configure build command: `cd backend && pip install -r requirements.txt`
-- Configure start command: `cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT`
-
-## 📈 Performance
-
-- **Average Response Time**: <2s per search
-- **Intent Accuracy**: ~94% (based on initial testing)
-- **LLM Inference**: <1s with Groq
-- **Database Queries**: Optimized with connection pooling
-
-## 🧪 Testing
+Or from the command line:
 
 ```bash
-# Backend tests
-cd /app/backend
-pytest
-
-# Test signup
+# Sign up
 curl -X POST http://localhost:8001/api/auth/signup \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","password":"testpass123"}'
 
-# Test search (requires auth token)
+# Search (paste the token from the response above)
 curl -X POST http://localhost:8001/api/search/twitter \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"location":"San Francisco","category":"SaaS","keywords":["CRM","tool"]}'
 ```
 
-## 📝 License
+---
 
-MIT License - Built for YC-grade startups
+## Environment Variables
 
-## 🤝 Contributing
+### Backend — `backend/.env`
 
-Contributions welcome! Please read CONTRIBUTING.md first.
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `POSTGRES_URL` | ✅ | — | PostgreSQL connection string |
+| `DB_NAME` | | `neondb` | Database name (informational) |
+| `TWITTER_BEARER_TOKEN` | ✅ | — | Twitter API v2 bearer token |
+| `GROQ_API_KEY` | ✅ | — | Groq API key |
+| `JWT_SECRET` | ✅ | — | Secret used to sign JWTs |
+| `JWT_ALGORITHM` | | `HS256` | JWT signing algorithm |
+| `JWT_EXPIRATION_HOURS` | | `24` | Token lifetime |
+| `CORS_ORIGINS` | | `*` | Comma-separated allowed origins |
 
-## 🐛 Known Limitations
+### Frontend — `frontend/.env`
 
-- Twitter API rate limit: 100 requests/month (Basic tier)
-- No real-time streaming (uses Recent Search endpoint)
-- English language only (can be extended)
-- 24-hour tweet lookback window (API constraint)
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `REACT_APP_BACKEND_URL` | ✅ | Base URL of the backend (no trailing slash) |
+| `WDS_SOCKET_PORT` | | Dev-server websocket port (default `3000`) |
+| `ENABLE_HEALTH_CHECK` | | Enables the dev health-check plugin |
 
-## 🎓 YC-Grade Principles Applied
-
-1. **Precision over Recall**: Focus on high-quality buyer signals, not volume
-2. **Simplicity**: Clean architecture, no over-engineering
-3. **Explainability**: Every intent score comes with reasoning
-4. **Speed**: Fast inference with Groq, optimized queries
-5. **Legal Compliance**: Official APIs only, no scraping
-
-## 📞 Support
-
-For issues or questions, please open a GitHub issue or contact the maintainers.
+> `.env` files are git-ignored. Never commit real keys — commit `.env.example` only.
 
 ---
 
-Built with ❤️ for startups turning Twitter into their demand generation engine.
+## API Reference
+
+All routes are prefixed with `/api`. Protected routes require `Authorization: Bearer <token>`.
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| `GET` | `/` | – | Health / welcome message |
+| `POST` | `/auth/signup` | – | Create account → `{ token, user }` |
+| `POST` | `/auth/login` | – | Log in → `{ token, user }` |
+| `POST` | `/search/twitter` | ✅ | Run a buyer-intent search. Body: `{ location, category, keywords[] }` |
+| `GET` | `/search/history` | ✅ | Past searches for the current user |
+| `GET` | `/datasets` | ✅ | Labelled high-intent tweets (training data) |
+| `GET` | `/twitter/rate-limit-info` | – | Twitter tier / rate-limit info |
+
+Full OpenAPI docs: `http://localhost:8001/docs`.
+
+## Database Schema
+
+| Table | Key columns |
+|-------|-------------|
+| `users` | `id`, `email` (unique), `password_hash`, `created_at` |
+| `search_queries` | `id`, `user_id` → users, `location`, `category`, `keywords`, `created_at` |
+| `tweets` | `id`, `tweet_id` (unique), `text`, `username`, `created_at`, `engagement_metrics` (JSONB), `location_confidence`, `intent_score`, `category`, `raw_json` (JSONB) |
+| `intent_datasets` | `id`, `tweet_id` → tweets, `intent_label`, `reasoning`, `created_at` |
+
+Tables are created on startup by `backend/database.py`.
+
+## How Intent Scoring Works
+
+1. **Input** — location, category and keywords from the dashboard.
+2. **Expansion** — Llama 3.3 expands the input into an optimised boolean Twitter query.
+3. **Fetch** — the Recent Search endpoint returns matching public tweets.
+4. **Analyse** — each tweet is scored for buyer intent, location match and category fit, with a written reason.
+5. **Store** — results are saved; high-intent tweets are added to the dataset.
+
+| Label | Score | Signals |
+|-------|-------|---------|
+| **High** | 0.80 – 1.00 | Explicit "looking to buy / need recommendations", urgency, budget or timeline |
+| **Medium** | 0.50 – 0.79 | Exploring options, comparing alternatives |
+| **Low** | 0.00 – 0.49 | Casual mention, informational only |
+
+## Testing
+
+```bash
+# Unit tests (from repo root, with the backend venv active)
+pytest
+
+# End-to-end API smoke test against a running backend
+python backend_test.py
+```
+
+> `backend_test.py` defaults to a hosted preview URL; edit `base_url` in the file (or the `main()` function) to `http://localhost:8001` to test locally.
+
+## Deployment
+
+### Backend (Render, Railway, Fly, etc.)
+
+- **Build command:** `pip install -r backend/requirements.txt`
+- **Start command:** `cd backend && uvicorn server:app --host 0.0.0.0 --port $PORT`
+- Set every variable from `backend/.env.example` in the host's environment settings.
+- Set `CORS_ORIGINS` to your deployed frontend URL.
+
+### Frontend (Vercel, Netlify, Render static)
+
+- **Root directory:** `frontend`
+- **Build command:** `yarn build`
+- **Publish directory:** `frontend/build`
+- Set `REACT_APP_BACKEND_URL` to the deployed backend URL.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| `KeyError: 'GROQ_API_KEY'` / `POSTGRES_URL` on startup | `backend/.env` is missing or not in the `backend/` folder. |
+| `429 Rate limit exceeded` on search | Twitter Basic tier is capped at ~100 requests/month. See [RATE_LIMIT_SOLUTION.md](RATE_LIMIT_SOLUTION.md). |
+| Frontend shows "Network Error" | Backend not running, or `REACT_APP_BACKEND_URL` is wrong. Restart `yarn start` after editing `.env`. |
+| CORS error in browser console | Add the frontend origin to `CORS_ORIGINS` in `backend/.env`. |
+| `asyncpg` SSL / connection refused | Ensure the Postgres URL ends with `?sslmode=require` for Neon, or that a local Postgres is running. |
+| `yarn: command not found` | `npm install -g yarn` |
+
+## Known Limitations
+
+- Twitter Basic tier: ~100 search requests / month.
+- Recent Search only (last 7 days of tweets), no streaming.
+- English-language analysis only.
+
+## License
+
+MIT
